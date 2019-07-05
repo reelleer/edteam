@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Propiedades en Vue.js</title>
+</head>
+<body>
+  <main id="app">
+    <h1>Propiedades en Vue.js</h1>
+    <a href="../">Regresar</a>
+    <starwars-characters
+      v-for="character of characters"
+      :name="character.name"
+      :height="character.height"
+      :eye-color="character.eye_color"
+      :skin-color="character.skin_color"
+    ></starwars-characters>
+    <pre>{{$data}}</pre>
+  </main>
+  <template id="starwars">
+    <div>
+      <h2>{{name}}</h2>
+      <ul>
+        <li>Height: {{height}}</li>
+        <li :style="{color: eyeColor}">Eye Color: {{eyeColor}}</li>
+        <li>Skin Color: {{skinColor}}</li>
+      </ul>
+    </div>
+  </template>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script>
+    Vue.component("starwars-characters", {
+      template:'#starwars',
+      props: ['name', 'eyeColor', 'height', 'skinColor'],
+    });
+
+    const mv = new Vue({
+      el: '#app',
+      mounted() {
+        axios.get('https://swapi.co/api/people/')
+          .then(res => {
+            console.log(res);
+            this.characters = res.data.results
+          })
+      },
+      data: {
+        characters: []
+      }
+    })
+  </script>
+</body>
+</html>

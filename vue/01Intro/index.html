@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="style.css">
+  <title>Document</title>
+</head>
+<body>
+  <main id="app">
+    <h1>Básicos en Vue.js</h1>
+    <a href="../">Regresar</a>
+    <form id="ContactForm" class="ContactForm" @submit.prevent="sendForm">
+      <legend class="mb">¿Qué deseas enviar?</legend>
+      <div class="mb" align="center">
+        <input v-model="formType" type="radio" name="formType" id="opinion"     :value="true" > <label for="opinion">Opinion</label>
+        <input v-model="formType" type="radio" name="formType" id="presupuesto" :value="false" > <label for="presupuesto">Presupuesto</label>      
+      </div>
+      <legend>Formulario de <span>{{formTitle}}</span></legend>
+      <input
+        @keyup="validateData"
+        type="text"
+        class="form-control"
+        name="name"
+        title="Tu nombre"
+        pattern="^[A-Za-zÑñÁáÉéÍíÓóüúÜü\s]+$"
+        placeholder="Escribe tu nombre">
+      <span v-show="message.name" v-text="message.name"></span>
+      <input
+        @keyup="validateData"
+        type="email" class="form-control" name="email" title="Tu email" placeholder="Escribe tu email" required
+        pattern="^[a-z0-9]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,15})$">
+      <span v-show="message.email" v-text="message.email"></span>
+      <template v-if="!formType">
+        <input
+        @keyup="validateData"
+        type="tel" class="form-control" name="phone" title="Tu teléfono" placeholder="Escribe tu teléfono" pattern="^[0-9]+$" required>
+        <span v-show="message.phone" v-text="message.phone"></span>
+        <select class="form-control" name="services" required>
+          <option
+            v-for="service in services"
+            :value="services.id"
+            v-text="service.name"
+          ></option>
+        </select>
+      </template>
+      <template v-else>
+        <input
+          @keyup="validateData"
+          type="text" class="form-control" name="subject" title="Asunto a tratar" placeholder="Asunto a tratar">
+        <span v-show="message.subject" v-text="message.subject"></span>
+      </template>
+      <textarea
+        @keyup="validateData"
+        required
+        class="form-control" name="comments" title="Tus comentarios" placeholder="Escribe tus comentarios" cols="50" rows="5">
+      </textarea>
+      <span v-show="message.comments" v-text="message.comments"></span>
+      <input
+      type="submit" class="btn" value="enviar">
+    </form>
+    <pre>{{$data}}</pre>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script>
+    const mv = new Vue({
+      el: '#app',
+      data: {
+        formType: true,
+        message: {
+          name: '',
+          email: '',
+          phone: '',
+          subject: '',
+          comments: '',
+          serverResponse: ''
+        },
+        services: [
+          {id:null, name: 'Selecciones un servicio'},
+          {id:1, name:'Diseño Gráfico'},
+          {id:2, name:'Diseño Web'},
+          {id:3, name:'Programación Web'},
+          {id:4, name:'Programación Móvil'},
+          {id:5, name:'Marketing Degital'}
+        ],
+        formats: {
+          name:'',
+          email:''
+        }
+      },
+      computed: {
+        formTitle() {
+          return (this.formType)? 'opinión' : 'presupuesto';
+        }
+      },
+      methods: {
+        validateData(e){
+          let input = e.target, expression;
+
+          if (input.pattern) {
+            let regex = new RegExp(input.pattern);
+            expression = !regex.exec(input.value);
+          } else {
+            expression = !input.value;
+          }
+
+          if(expression){
+            this.message[input.name] = `Dato incorrecto, ${input.title}`;
+          } else {
+            this.message[input.name] = '';
+          }
+        },
+        sendForm(e){
+          let form = document.getElementById('ContactForm'),
+            formData = new FormData(form);
+
+          console.log(formData);
+        }
+      }
+    });
+  </script>
+</body>
+</html>

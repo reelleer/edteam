@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Slots en componentes de Vue.js</title>
+</head>
+<body>
+  <main id="app">
+    <h1>Slots en components de Vue.js</h1>
+    <a href="../index.html">Regresar</a>
+    <card></card>
+    <card>
+      <template>
+        <img src="https://drupal.ed.team/sites/default/files/styles/medium/public/courses/images/vue.png?itok=593ObQv3" alt="test">
+      </template>
+    </card>
+    <cards :members="team">
+      <template scope="data">
+        <img :src="data.avatar">
+      </template>
+      <template slot="name" scope="data">
+        <h3 v-text="data.nombre"></h3>
+      </template>
+    </cards>
+    <pre>{{$data}}</pre>
+  </main>
+  <template id="card">
+    <figure>
+      <slot>
+        <img src="https://reel.soy/favicon.png">
+      </slot>
+      <figcaption>
+        <slot name="name">EDteam</slot>
+        <slot name="position">Comunidad</slot>
+        <slot name="phrase">Educación con Honestidad</slot>
+      </figcaption>
+    </figure>
+  </template>
+  <template id="cards">
+    <div>
+      <figure v-for="member in members">
+        <slot :avatar="member.avatar"></slot>
+        <figcaption>
+          <slot name="name" :nombre="member.name"></slot>
+        </figcaption>
+      </figure>
+    </div>
+  </template>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <!-- <script src="https://unpkg.com/axios/dist/axios.min.js"></script> -->
+  <script>
+    const mv = new Vue({
+      el: '#app',
+      data: {
+        team: [
+          {
+            name: 'Alexys',
+            avatar: 'https://api.ed.team/files/avatars/747dea4d-4438-4a7e-904a-427a5cd6aac7.jpg'
+          },
+          {
+            name: 'Beto',
+            avatar: 'https://api.ed.team/files/avatars/38118146-4b4a-4844-8959-157614e04cd1.jpg'
+          }
+        ]
+      },
+      components: {
+        'card':{
+          template: '#card'
+        },
+        'cards': {
+          props: ['members'],
+          template: '#cards'
+        }
+      }
+    })
+  </script>
+</body>
+</html>

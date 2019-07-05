@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Slots en componentes de Vue.js</title>
+  <style>
+    :root {
+      --color-primary: #41B883;
+      --color-secondary: #35495E;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      font-family: sans-serif;
+      height: 100vh;
+    }
+
+    button {
+      padding: 10xp 15px;
+      outline: 0;
+      width: 60%;
+      border: solid solid var(--color-primary);
+      background-color: var(--color-secondary);
+      color: var(--color-primary);
+      cursor: pointer;
+    }
+
+    #app {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    .modal {
+      position: absolute;
+      padding: 2rem;
+      width: 100%;
+      min-height: 100vh;
+      background-color: rgba(65,180,131, .25);
+      color: (var(--color-secondary));
+    }
+
+    .fade-enter-active,
+    .fade-leave-active {
+      transition: opacity 0.2s ease-out;
+    }
+
+    .fade-enter
+    .fade-leave-to {
+      opacity: 0;
+    }
+
+    .blur {
+      filter: blur(1px);
+      opacity: 50%;
+    }
+  </style>
+</head>
+<body>
+  <main id="app">
+    <div :class="[isShowing ? blurr : '']">
+      <h1>Eventos en components de Vue.js</h1>
+      <a href="../index.html">Regresar</a>
+      <br>
+      <modal-btn @modal="toggleModal"></modal-btn>
+    </div>
+    <transition name="fade">
+      <modal v-if="isShowing" class="modal">
+        <slot>
+          <modal-btn @modal="toggleModal"></modal-btn>
+        </slot>
+      </modal>
+    </transition>
+  </main>
+  <template id="modal">
+    <h2>Soy un modal</h2>
+    <slot></slot>
+  </template>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <!-- <script src="https://unpkg.com/axios/dist/axios.min.js"></script> -->
+  <script>
+    const mv = new Vue({
+      el: '#app',
+      data: {
+        isShowing: false,
+        blur: 'blur'
+      },
+      methods: {
+        toggleModal() {
+          this.isShowing = !this.isShowing;
+        }
+      },
+      components: {
+        modalBtn: {
+          template: `<button @click="openModal">Modal</button>`,
+          methods: {
+            openModal(){
+              this.$emit('modal');
+            }
+          }
+        },
+        modal: {
+          template: '#modal'
+        }
+      }
+    })
+  </script>
+</body>
+</html>
