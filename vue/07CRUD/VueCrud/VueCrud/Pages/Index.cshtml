@@ -1,0 +1,339 @@
+﻿@page
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>CRUD With Vue.js, .NET Core &amp; SQL Server LocalDb</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <style>
+        :root {
+            --color-primary: #41B883;
+            --color-secondary: #35495E;
+            --bg-color: #727f80;
+        }
+
+        .btn,
+        .btn-large {
+            background-color: var(--color-primary);
+        }
+
+        .btn:hover,
+        .btn-large:hover {
+            background-color: var(--color-secondary);
+        }
+
+        .ModalWindow {
+            position: fixed;
+            z-index: 999;
+            top:0;
+            left:0;
+            right:0;
+            bottom:0;
+            background-color: rgba(0,0,0,.25);
+            display: none;
+        }
+
+        .ModalWindow-contairner {
+            margin: 5vh auto 0;
+            width: 60%;
+            background-color: #fff;
+        }
+
+        .ModalWindow-heading {
+            padding: 0.1rem;
+            background-color: var(--bg-color);
+            color: #FFF;
+        }
+
+        .ModalWindow-content {
+            padding: 1rem;
+        }
+
+        .u-flexColumnCenter {
+            padding: 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .u-show {
+            display: initial;
+        }
+
+        .fade-enter-active,
+        .fade-leave-active {
+            transition: opacity .5s;
+        }
+
+        .fate-enter,
+        .fade-leave-to {
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+    <main id="app" class="container center">
+        <section class="row valign-wrapper">
+            <div class="col s12 m3">
+                <img src="https://vuejs.org/images/logo.png"
+                     alt="Vue.js"
+                     class="responsive-img" />
+            </div>
+            <div class="col s12 m6">
+                <h1></h1>
+                <h5>(.NET Core &amp; SQL Server LocalDb)</h5>
+            </div>
+            <div class="col s12 m3">
+                <img src="https://ed.team/static/images/logo-alt.svg"
+                     alt="" class="responsive-img" />
+            </div>
+        </section>
+        <section class="row valign-wrapper">
+            <div class="col s12">
+                <h2>Curso de Vue.js desde cero</h2>
+            </div>
+        </section>
+        <section class="row valign-wrapper">
+            <div class="col s10">
+                <h3 class="left">Lista de estudiantes</h3>
+            </div>
+            <div class="col s2">
+                <button class="btn-large btn-floating" v-on:click="toggleModal('add')">
+                    <i class="material-icons">add_circle</i>
+                </button>
+            </div>
+        </section>
+        <hr />
+        <transition name="fade">
+            <p class="u-flexColumnCenter red accent-1 red-text text-darken-4"
+               v-if="errorMessage">
+                {{ errorMessage }}
+                <i class="material-icons prefix">error</i>
+            </p>
+            <p class="u-flexColumnCenter green accent-1 green-text text-darken-4"
+               v-if="successMessage">
+                {{ sucessMessage }}
+                <i class="material-icons prefix">check_circle</i>
+            </p>
+        </transition>
+        <transition name="fade">
+            <table class="responsive-table striped">
+                <tr>
+                    <th>Id</th>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Web</th>
+                    <th>Editar</th>
+                    <th>Borrar</th>
+                </tr>
+                <tr v-for="student in students" :key="student.id">
+                    <td>{{ student.studentId }}</td>
+                    <td>{{ student.name }}</td>
+                    <td>{{ student.email }}</td>
+                    <td>{{ student.web }}</td>
+                    <td>
+                        <button class="btn btn-floating">
+                            <i class="material-icons" v-on:click="getStudent('edit', student)">edit</i>
+                        </button>
+                    </td>
+                    <td>
+                        <button class="btn btn-floating">
+                            <i class="material-icons" v-on:click="getStudent('delete', student)">delete</i>
+                        </button>
+                    </td>
+                </tr>
+            </table>
+        </transition>
+        <transition name="fade">
+            <section :class="['ModalWindow', displayAddModal]" v-if="showAddModal">
+                <div class="ModalWindow-contairner">
+                    <header class="ModalWindow-heading">
+                        <div class="row valign-wrapper">
+                            <div class="col s10">
+                                <h4 class="left">Agregar Estudiante</h4>
+                            </div>
+                            <div class="col s12">
+                                <button class="btn btn-floating right" v-on:click="toggleModal('add')">
+                                    <i class="material-icons">close</i>
+                                </button>
+                            </div>
+                        </div>
+                    </header>
+                    <form class="ModalWindow-content row" v-on:submit.prevent="createStudent">
+                        <div class="input-field col s12">
+                            <i class="material-icons prefix">account_circle</i>
+                            <input name="Name" type="text" value="" placeholder="Nombre" required />
+                        </div>
+                        <div class="input-field col s12">
+                            <i class="material-icons prefix">email</i>
+                            <input name="Email" type="text" value="" placeholder="Correo" required />
+                        </div>
+                        <div class="input-field col s12">
+                            <i class="material-icons prefix">web</i>
+                            <input name="Web" type="text" value="" placeholder="Web" required />
+                        </div>
+                        <div class="input-field col s12">
+                            <button class="btn-large btn-floating right" type="submit">
+                                <i class="material-icons">save</i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </transition>
+        <transition name="fade">
+            <section :class="['ModalWindow', displayEditModal]" v-if="showEditModal">
+                <div class="ModalWindow-contairner">
+                    <header class="ModalWindow-heading">
+                        <div class="row valign-wrapper">
+                            <div class="col s10">
+                                <h4 class="left">Editar Estudiante</h4>
+                            </div>
+                            <div class="col s12">
+                                <button class="btn btn-floating right" v-on:click="toggleModal('edit')">
+                                    <i class="material-icons">close</i>
+                                </button>
+                            </div>
+                        </div>
+                    </header>
+                    <form class="ModalWindow-content row" v-on:submit.prevent="updateStudent">
+                        <div class="input-field col s12">
+                            <i class="material-icons prefix">account_circle</i>
+                            <input v-model="activeStudent.name" name="Name" type="text" value="" placeholder="Nombre" required />
+                        </div>
+                        <div class="input-field col s12">
+                            <i class="material-icons prefix">email</i>
+                            <input v-model="activeStudent.email" name="Email" type="text" value="" placeholder="Correo" required />
+                        </div>
+                        <div class="input-field col s12">
+                            <i class="material-icons prefix">web</i>
+                            <input v-model="activeStudent.web" name="Web" type="text" value="" placeholder="Web" required />
+                        </div>
+                        <div class="input-field col s12">
+                            <button class="btn-large btn-floating right" type="submit">
+                                <i class="material-icons">save</i>
+                            </button>
+                            <input v-model="activeStudent.studentId" type="hidden" name="StudentId" value="" />
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </transition>
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        const app = new Vue({
+            el: "#app",
+            data: {
+                showAddModal: false,
+                showEditModal: false,
+                showDeleteModal: false,
+                errorMessage: '',
+                successMessage: '',
+                students: [],
+                activeStudent: {}
+            },
+            mounted() {
+                this.getAllStudents();
+            },
+            computed: {
+                displayAddModal() {
+                    return this.showAddModal ? 'u-show' : '';
+                },
+                displayEditModal() {
+                    return this.showEditModal ? 'u-show' : '';
+                },
+                displayDeleteModal() {
+                    return this.showDeleteModal ? 'u-show' : '';
+                }
+            },
+            methods: {
+                toggleModal(modal) {
+                    if (modal === 'add')
+                        this.showAddModal = !this.showAddModal;
+                    else if (modal === 'edit')
+                        this.showEditModal = !this.showEditModal;
+                    else if (modal === 'delete')
+                        this.showDeleteModal = !this.showDeleteModal;
+                },
+                setMessages(res) {
+                    console.trace();
+                    console.log(res);
+                    if (res.error) {
+                        this.errorMessage = res.message;
+                    } else {
+                        this.successMessage = res.message;
+                    }
+
+                    setTimeout(() => {
+                        this.errorMessage = '';
+                        this.successMessage = '';
+                    },
+                        2000
+                    );
+                },
+                getAllStudents() {
+                    axios.get('/api/Students')
+                        .then(res => {
+                            console.log(res);
+                            this.students = res.data;
+                        });
+                },
+                createStudent(e) {
+                    const els = e.target.elements;
+                    const data = {
+                        Name : els['Name'].value,
+                        Email: els['Email'].value,
+                        Web  : els['Web'].value
+                    }
+
+                    axios.post(
+                        '/api/Students',
+                        data
+                    )
+                        .then(res => {
+                            this.toggleModal('add');
+                            this.setMessages({ data: { error: false, message: 'Student Added.' }, res })
+                            this.students.push(res.data);
+                            //this.getAllStudents();
+                        })
+                        .catch(err => this.setMessages({ data: { error: true, message: err.message }, err }));
+                },
+                getStudent(action, student) {
+                    this.toggleModal(action);
+                    this.activeStudent = student;
+                },
+                updateStudent(e) {
+                    const els = e.target.elements;
+                    const data = {
+                        StudentId: els['StudentId'].value,
+                        Name     : els['Name'].value,
+                        Email    : els['Email'].value,
+                        Web      : els['Web'].value
+                    }
+
+                    axios.put(
+                        `/api/Students/${this.activeStudent.studentId}`,
+                        data
+                    )
+                        .then(res => {
+                            this.toggleModal('edit');
+                            this.setMessages({ data: { error: false, message: 'Student Updated.' }, res })
+                            
+                            this.getAllStudents();
+                        })
+                        .catch(err => this.setMessages({ data: { error: true, message: err.message }, err }));
+                },
+                deleteStudent() { }
+            }
+        });
+    </script>
+</body>
+</html>
