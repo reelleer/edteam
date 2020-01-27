@@ -8,7 +8,7 @@ Cursos tomandos en la plataforma de [EDteam](https://ed.team)
 
 ## Mozilla Developer Network
 
-Estuandiando en [MDN](https://developer.mozilla.org/).
+Estudiando en [MDN](https://developer.mozilla.org/).
 
 - [Javascript](./mdn/javascript)
 
@@ -16,4 +16,4 @@ Estuandiando en [MDN](https://developer.mozilla.org/).
 
 Aprendiendo de videos de youtube.
 
-1. Academind - [Typescript 2020](./youtube/acdemin/ts2020)
+1. Academind - [Typescript 2020](./youtube/academin/ts2020)
