@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Build a GitHub User Profile Component</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css" />
+</head>
+<body>
+    <div id="app" class="ui container">
+      <h1>Notification Center</h1>
+      <notification-message type="error" header="Oh no!">
+        <p>Your flight has bien <b>canceled</b>!</p>
+      </notification-message>
+      <notification-message type="success" header="Oh yeah!">
+        <p>Your flight is on time!</p>
+      </notification-message>
+
+      <notification-message>
+        <p>Good morning.</p>
+      </notification-message>
+    </div>
+
+    <script id="notification-message-template" type="text/x-template">
+        <div v-if="open" class="ui message" :class="type">
+          <i @click="close" class="close icon"></i>
+          <div class="header">
+            {{header}}
+          </div>
+          <slot></slot>
+        </div>  
+    </script>
+
+   
+
+    <script src="http://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

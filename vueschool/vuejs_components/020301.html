@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue.js Slots Fundamentals</title>
+</head>
+<body>
+    <div id="app">
+        <page-layout>
+            <template #header>
+                <h1 class="title">Vue.js Slots Fundamentals</h1>
+            </template>
+            <todo-item>
+                Buy Bananas
+                <!-- Shorthand for v-slot:description
+                    #descritipon
+                 -->
+                <template #description>
+                    <p>
+                        Bananas are good for your health.
+                    </p>
+                </template>
+                <template #button-text>
+                    Make it rain
+                </template>
+            </todo-item>
+    
+            <todo-item>
+                Eat Bananas
+                <template #description>
+                    <p>
+                        Bananas are good.
+                    </p>
+                </template>
+            </todo-item>
+            <template>
+                <p>Here's some contact info</p>
+            </template>
+        </page-layout>
+    </div>
+
+    <script id="todo-item-template" type="text/x-template">
+        <div>
+            <input type="checkbox" v-model="completed">
+            <span :class="{done: completed}">
+                <slot></slot>
+            </span>
+            <slot name="description"></slot>
+            <button>
+                <slot name="button-text">Highlight</slot>
+            </button>
+        </div>
+    </script>
+
+    <script id="page-layout-template" type="text/x-template">
+        <div class="container">
+            <header class="header">
+                <slot name="header"></slot>
+            </header>
+            <main class="main">
+                <slot></slot>
+            </main>
+            <footer class="footer">
+                <slot name="footer"></slot>
+            </footer>
+        </div>
+    </script>
+
+    <script src="http://unpkg.com/vue"></script>
+    <script src="app020301.js"></script>
+    <style>
+        .container {
+            max-width: 1920;
+            padding: 10px;
+        }
+
+        header {
+            width: 100%;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        footer {
+            width: 100%;
+            margin-top: 50px;
+            text-align: center;
+        }
+    </style>
+</body>
+</html>
