@@ -21,3 +21,4 @@ Aprendiendo de videos de youtube.
 ## VueShool
 
 1. [Vue.js Fundamentals](./vueschool/vuejs_fundamentals)
+2. [Vue.js Components Fundamentals](./vueschool/vuejs_components)
