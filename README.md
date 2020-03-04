@@ -22,3 +22,4 @@ Aprendiendo de videos de youtube.
 
 1. [Vue.js Fundamentals](./vueschool/vuejs_fundamentals)
 2. [Vue.js Components Fundamentals](./vueschool/vuejs_components)
+3. [Vue Router for Everyone](./vueschool/vuejs_router)
